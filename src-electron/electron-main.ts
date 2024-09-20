@@ -16,6 +16,15 @@ function createWindow() {
     width: 1000,
     height: 600,
     useContentSize: true,
+    center: true,
+    title: 'Markdown Notes',
+    frame: false,
+    vibrancy: 'under-window',
+    titleBarStyle: 'hidden',
+    trafficLightPosition: {
+      x: 15,
+      y: 15,
+    },
     webPreferences: {
       contextIsolation: true,
       sandbox: true,
