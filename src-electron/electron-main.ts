@@ -18,6 +18,7 @@ function createWindow() {
     useContentSize: true,
     webPreferences: {
       contextIsolation: true,
+      sandbox: true,
       // More info: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/electron-preload-script
       preload: path.resolve(__dirname, process.env.QUASAR_ELECTRON_PRELOAD),
     },
