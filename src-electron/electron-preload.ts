@@ -34,10 +34,12 @@ if (!process.contextIsolated) {
   throw new Error('contextIsolated must be enabled in the BrowserWindow');
 }
 
+export const context = {
+  locale: navigator.language,
+};
+
 try {
-  contextBridge.exposeInMainWorld('context', {
-    // TODO
-  });
+  contextBridge.exposeInMainWorld('context', context);
 } catch (error) {
   console.error('Failed to expose context in main world', error);
 }

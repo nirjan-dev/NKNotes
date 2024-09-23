@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 @layer base {
-    header {
+    .app-draggable {
         -webkit-app-region: drag;
     }
 

@@ -8,28 +8,26 @@
       behavior="desktop"
     >
       <!-- drawer content -->
+      <div class="py-4 px-4 flex justify-between">
+        <q-btn round icon="note_add"></q-btn>
+        <q-btn round icon="delete"></q-btn>
+      </div>
+
+      <NotePreviewList />
     </q-drawer>
 
     <q-page-container>
-      <header class="z-[9999] absolute inset-0 h-10 bg-transparent"></header>
+      <q-toolbar class="bg-gray-200 text-center app-draggable">
+        <q-toolbar-title>Markdown Notes Editor</q-toolbar-title>
+      </q-toolbar>
       <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { ref } from 'vue';
+import NotePreviewList from 'components/NotePreviewList.vue';
 
-export default {
-  setup() {
-    const leftDrawerOpen = ref(false);
-
-    return {
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
-    };
-  },
-};
+const leftDrawerOpen = ref(false);
 </script>
