@@ -8,16 +8,16 @@
       behavior="desktop"
     >
       <!-- drawer content -->
-      <div class="py-4 px-4 flex justify-between">
-        <q-btn round icon="note_add"></q-btn>
-        <q-btn round icon="delete"></q-btn>
+      <div class="flex justify-between px-4 py-4">
+        <q-btn @click="createNewNote" round icon="note_add"></q-btn>
+        <q-btn @click="deleteSelectedNote" round icon="delete"></q-btn>
       </div>
 
       <NotePreviewList />
     </q-drawer>
 
     <q-page-container>
-      <q-toolbar class="bg-gray-200 text-center app-draggable">
+      <q-toolbar class="text-center bg-gray-200 app-draggable">
         <q-toolbar-title>Markdown Notes Editor</q-toolbar-title>
       </q-toolbar>
       <router-view />
@@ -28,6 +28,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import NotePreviewList from 'components/NotePreviewList.vue';
-
+import { useNotesStore } from 'src/stores/notesStore';
+const { createNewNote, deleteSelectedNote } = useNotesStore();
 const leftDrawerOpen = ref(false);
 </script>

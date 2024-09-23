@@ -25,10 +25,30 @@ export const useNotesStore = defineStore('notes', () => {
     selectedNoteIndex.value = index;
   }
 
+  function createNewNote() {
+    notes.value.unshift({
+      title: `New Note #${notes.value.length + 1}`,
+      lastEditTime: new Date().getTime(),
+    });
+
+    selectedNoteIndex.value = 0;
+  }
+
+  function deleteSelectedNote() {
+    if (selectedNoteIndex.value === null) {
+      return;
+    }
+
+    notes.value.splice(selectedNoteIndex.value, 1);
+    selectedNoteIndex.value = null;
+  }
+
   return {
     notes,
     selectedNoteIndex,
     selectedNote,
     setSelectedNoteIndex,
+    createNewNote,
+    deleteSelectedNote,
   };
 });
