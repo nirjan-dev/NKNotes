@@ -11,7 +11,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
-    "dev:desktop": "quasar dev -m electron"
+    "dev:desktop": "quasar dev -m electron --devtools"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
@@ -30,6 +30,7 @@
     "@types/node": "^20.14.8",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",
+    "@vue/devtools": "^7.4.5",
     "autoprefixer": "^10.4.2",
     "electron": "^32.1.2",
     "eslint": "^8.57.0",

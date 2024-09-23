@@ -1,10 +1,11 @@
 <template>
-  <ul v-if="notesMock.length">
-    <li v-for="note in notesMock" :key="note.title">
+  <ul v-if="notesStore.notes.length">
+    <li v-for="(note, index) in notesStore.notes" :key="note.title">
       <NotePreview
         :title="note.title"
         :lastEditTime="note.lastEditTime"
-        :isActive="false"
+        :isActive="index === notesStore.selectedNoteIndex"
+        @click="notesStore.setSelectedNoteIndex(index)"
       />
     </li>
   </ul>
@@ -13,8 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { notesMock } from 'src/stores/mocks';
 import NotePreview from 'src/components/NotePreview.vue';
+import { useNotesStore } from 'src/stores/notesStore';
+
+const notesStore = useNotesStore();
 </script>
 
 <style scoped></style>
