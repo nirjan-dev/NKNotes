@@ -9,16 +9,35 @@ import { Markdown } from 'tiptap-markdown';
 import { computed, ref, watch } from 'vue';
 import { useNotesStore } from 'src/stores/notesStore';
 import { storeToRefs } from 'pinia';
+import { useThrottleFn } from '@vueuse/core';
 
 const { selectedNote } = storeToRefs(useNotesStore());
 
 const content = ref(selectedNote?.content);
 
+const AUTO_SAVE_TIME = 5000;
+
+async function saveNote() {
+  if (!selectedNote.value) {
+    return;
+  }
+
+  console.log('auto saving note...');
+  await window.context.writeNote(selectedNote.value.title, content.value);
+}
+
+const saveNoteThrottled = useThrottleFn(
+  async () => await saveNote(),
+  AUTO_SAVE_TIME
+);
+
 const editor = useEditor({
   extensions: [StarterKit, Markdown],
   content: content.value,
   onUpdate: ({ editor }) => {
-    content.value = editor.getHTML();
+    content.value = editor.storage.markdown.getMarkdown();
+
+    saveNoteThrottled();
   },
   editorProps: {
     attributes: {
@@ -32,6 +51,7 @@ watch(selectedNote, () => {
   if (selectedNote.value) {
     content.value = selectedNote.value.content;
     editor.value.commands.setContent(selectedNote.value.content);
+    saveNote();
   }
 });
 

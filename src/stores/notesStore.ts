@@ -5,6 +5,12 @@ import { computed, ref } from 'vue';
 
 export const useNotesStore = defineStore('notes', () => {
   const notes = ref<NoteInfo[]>(notesMock);
+  const selectedNoteContent = ref('');
+  async function loadNotes() {
+    const savedNotes = await window.context.getNotes();
+
+    notes.value = savedNotes;
+  }
 
   const selectedNoteIndex = ref<number | null>(null);
 
@@ -17,12 +23,19 @@ export const useNotesStore = defineStore('notes', () => {
 
     return {
       ...selectedNote,
-      content: `Hello from Notes${selectedNoteIndex.value}`,
+      content: selectedNoteContent.value,
     };
   });
 
-  function setSelectedNoteIndex(index: number) {
+  async function setSelectedNoteIndex(index: number) {
     selectedNoteIndex.value = index;
+
+    const selectedNote = notes.value[selectedNoteIndex.value];
+    if (selectedNote) {
+      selectedNoteContent.value = await window.context.readNote(
+        selectedNote.title
+      );
+    }
   }
 
   function createNewNote() {
@@ -43,6 +56,19 @@ export const useNotesStore = defineStore('notes', () => {
     selectedNoteIndex.value = null;
   }
 
+  async function saveSelectedNote() {
+    if (!selectedNote.value || !notes?.value.length) {
+      return;
+    }
+
+    await window.context.writeNote(
+      selectedNote.value.title,
+      selectedNote.value.content
+    );
+
+    selectedNote.value.lastEditTime = Date.now();
+  }
+
   return {
     notes,
     selectedNoteIndex,
@@ -50,5 +76,7 @@ export const useNotesStore = defineStore('notes', () => {
     setSelectedNoteIndex,
     createNewNote,
     deleteSelectedNote,
+    loadNotes,
+    saveSelectedNote,
   };
 });

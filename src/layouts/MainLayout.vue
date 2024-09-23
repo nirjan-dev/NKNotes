@@ -26,9 +26,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import NotePreviewList from 'components/NotePreviewList.vue';
 import { useNotesStore } from 'src/stores/notesStore';
-const { createNewNote, deleteSelectedNote } = useNotesStore();
+const { createNewNote, deleteSelectedNote, loadNotes } = useNotesStore();
 const leftDrawerOpen = ref(false);
+
+onMounted(async () => {
+  await loadNotes();
+});
 </script>

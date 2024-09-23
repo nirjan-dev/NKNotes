@@ -1,6 +1,14 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import os from 'os';
+import {
+  GetNotes,
+  getNotes,
+  ReadNote,
+  readNote,
+  writeNote,
+  WriteNote,
+} from 'app/src-electron/services/fileManager';
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
@@ -50,7 +58,20 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  ipcMain.handle('getNotes', (_, ...args: Parameters<GetNotes>) =>
+    getNotes(...args)
+  );
+
+  ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) =>
+    readNote(...args)
+  );
+
+  ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) =>
+    writeNote(...args)
+  );
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (platform !== 'darwin') {

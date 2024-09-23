@@ -28,7 +28,12 @@
  * }
  */
 
-import { contextBridge } from 'electron';
+import {
+  GetNotes,
+  ReadNote,
+  WriteNote,
+} from 'app/src-electron/services/fileManager';
+import { contextBridge, ipcRenderer } from 'electron';
 
 if (!process.contextIsolated) {
   throw new Error('contextIsolated must be enabled in the BrowserWindow');
@@ -36,6 +41,12 @@ if (!process.contextIsolated) {
 
 export const context = {
   locale: navigator.language,
+  getNotes: ((...args: Parameters<GetNotes>) =>
+    ipcRenderer.invoke('getNotes', ...args)) as unknown as GetNotes,
+  readNote: ((...args: Parameters<ReadNote>) =>
+    ipcRenderer.invoke('readNote', ...args)) as unknown as ReadNote,
+  writeNote: ((...args: Parameters<WriteNote>) =>
+    ipcRenderer.invoke('writeNote', ...args)) as unknown as WriteNote,
 };
 
 try {
