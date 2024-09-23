@@ -1,10 +1,14 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <h1 class="text-5xl font-bold">Hello</h1>
+  <q-page>
+    <NoteTitle title="Note title" />
+    <TextEditor />
   </q-page>
 </template>
 
 <script setup lang="ts">
+import NoteTitle from 'src/components/NoteTitle.vue';
+import TextEditor from 'src/components/TextEditor.vue';
+
 defineOptions({
   name: 'IndexPage',
 });
