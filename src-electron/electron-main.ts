@@ -2,6 +2,8 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import os from 'os';
 import {
+  CreateNote,
+  createNote,
   GetNotes,
   getNotes,
   ReadNote,
@@ -70,6 +72,11 @@ app.whenReady().then(() => {
   ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) =>
     writeNote(...args)
   );
+
+  ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) =>
+    createNote(...args)
+  );
+
   createWindow();
 });
 

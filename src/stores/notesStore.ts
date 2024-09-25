@@ -38,9 +38,15 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
-  function createNewNote() {
+  async function createNewNote() {
+    const title = await window.context.createNote();
+
+    if (!title) {
+      return;
+    }
+
     notes.value.unshift({
-      title: `New Note #${notes.value.length + 1}`,
+      title,
       lastEditTime: new Date().getTime(),
     });
 

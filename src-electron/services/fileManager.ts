@@ -1,5 +1,7 @@
+import { dialog } from 'electron';
 import { access, readdir, readFile, stat, writeFile } from 'fs/promises';
 import { homedir } from 'os';
+import path from 'path';
 import { NoteContent, NoteInfo } from 'src/types/models';
 
 const appDirectoryName = 'NKNotes';
@@ -54,4 +56,50 @@ export const writeNote: WriteNote = async (title, content) => {
   const filePath = `${rootDir}/${title}.md`;
 
   return writeFile(filePath, content, fileEncoding);
+};
+
+export type CreateNote = () => Promise<NoteInfo['title'] | false>;
+
+export const createNote: CreateNote = async () => {
+  const rootDir = getRootDir();
+
+  try {
+    await access(rootDir);
+
+    const { canceled, filePath } = await dialog.showSaveDialog({
+      title: 'Create Note',
+      defaultPath: `${rootDir}/Untitled.md`,
+      properties: ['showOverwriteConfirmation'],
+      showsTagField: false,
+      filters: [{ name: 'Markdown', extensions: ['md'] }],
+    });
+
+    if (canceled) {
+      console.log('Notes creation cancelled');
+
+      return false;
+    }
+
+    const { name: filename, dir: parentDir } = path.parse(filePath);
+
+    if (parentDir !== rootDir) {
+      await dialog.showMessageBox({
+        type: 'error',
+        title: 'Invalid path',
+        message: `Note can only be created in the ${rootDir} directory`,
+      });
+
+      return false;
+    }
+
+    console.info(`Creating new note: ${filePath}`);
+
+    await writeFile(filePath, '', fileEncoding);
+
+    return filename.replace(/\.md$/, '');
+  } catch (error) {
+    console.error(error);
+
+    return false;
+  }
 };
