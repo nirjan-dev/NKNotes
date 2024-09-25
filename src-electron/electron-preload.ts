@@ -30,6 +30,7 @@
 
 import {
   CreateNote,
+  DeleteNote,
   GetNotes,
   ReadNote,
   WriteNote,
@@ -50,6 +51,8 @@ export const context = {
     ipcRenderer.invoke('writeNote', ...args)) as unknown as WriteNote,
   createNote: ((...args: Parameters<CreateNote>) =>
     ipcRenderer.invoke('createNote', ...args)) as unknown as CreateNote,
+  deleteNote: ((...args: Parameters<DeleteNote>) =>
+    ipcRenderer.invoke('deleteNote', ...args)) as unknown as DeleteNote,
 };
 
 try {

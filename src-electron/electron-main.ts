@@ -4,6 +4,8 @@ import os from 'os';
 import {
   CreateNote,
   createNote,
+  DeleteNote,
+  deleteNote,
   GetNotes,
   getNotes,
   ReadNote,
@@ -75,6 +77,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) =>
     createNote(...args)
+  );
+
+  ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) =>
+    deleteNote(...args)
   );
 
   createWindow();

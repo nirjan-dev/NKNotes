@@ -1,5 +1,13 @@
 import { dialog } from 'electron';
-import { access, readdir, readFile, stat, writeFile } from 'fs/promises';
+import {
+  access,
+  mkdir,
+  readdir,
+  readFile,
+  rm,
+  stat,
+  writeFile,
+} from 'fs/promises';
 import { homedir } from 'os';
 import path from 'path';
 import { NoteContent, NoteInfo } from 'src/types/models';
@@ -18,16 +26,33 @@ export const getNotes: GetNotes = async () => {
 
   try {
     await access(rootDir);
-
-    const fileNames = await readdir(rootDir);
-
-    const notes = fileNames.filter((fileName) => fileName.endsWith('.md'));
-
-    return Promise.all(notes.map(getNoteInfoFromFilename));
   } catch (error) {
-    console.error(error);
-    return [];
+    await mkdir(rootDir);
+
+    console.info(__dirname, 'directoryyyyyyyyy');
+    const WELCOME_NOTE_NAME = 'welcomeNote';
+    const welcomeNotePath = path.resolve(
+      __dirname,
+      process.env.QUASAR_PUBLIC_FOLDER,
+      'assets'
+    );
+    const contents = await readFile(
+      `${welcomeNotePath}/${WELCOME_NOTE_NAME}.md`,
+      fileEncoding
+    );
+
+    await writeFile(
+      `${rootDir}/${WELCOME_NOTE_NAME}.md`,
+      contents,
+      fileEncoding
+    );
   }
+
+  const fileNames = await readdir(rootDir);
+
+  const notes = fileNames.filter((fileName) => fileName.endsWith('.md'));
+
+  return Promise.all(notes.map(getNoteInfoFromFilename));
 };
 
 async function getNoteInfoFromFilename(filename: string): Promise<NoteInfo> {
@@ -100,6 +125,36 @@ export const createNote: CreateNote = async () => {
   } catch (error) {
     console.error(error);
 
+    return false;
+  }
+};
+
+export type DeleteNote = (title: NoteInfo['title']) => Promise<boolean>;
+
+export const deleteNote: DeleteNote = async (title) => {
+  const rootDir = getRootDir();
+
+  const { response } = await dialog.showMessageBox({
+    type: 'warning',
+    title: 'Delete Note',
+    message: 'Are you sure you want to delete this note?',
+    buttons: ['Delete', 'Cancel'],
+    defaultId: 1,
+    cancelId: 1,
+  });
+
+  if (response === 1) {
+    console.info(`Note deletion cancelled: ${title}`);
+    return false;
+  }
+
+  console.info(`Deleting note: ${title}`);
+  try {
+    await rm(`${rootDir}/${title}.md`);
+
+    return true;
+  } catch (error) {
+    console.error(error);
     return false;
   }
 };

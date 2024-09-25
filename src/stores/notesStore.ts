@@ -53,8 +53,14 @@ export const useNotesStore = defineStore('notes', () => {
     selectedNoteIndex.value = 0;
   }
 
-  function deleteSelectedNote() {
-    if (selectedNoteIndex.value === null) {
+  async function deleteSelectedNote() {
+    if (selectedNoteIndex.value === null || !selectedNote.value?.title) {
+      return;
+    }
+
+    const isDeleted = await window.context.deleteNote(selectedNote.value.title);
+
+    if (!isDeleted) {
       return;
     }
 
